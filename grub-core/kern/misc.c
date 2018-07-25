@@ -197,6 +197,70 @@ grub_real_dprintf (const char *file, const int line, const char *condition,
     }
 }
 
+void
+grub_real_dprintf_buffer(const char* file, const int line, const char* condition,
+    void* pbuffer, int len, const char* fmt,...)
+{
+  va_list args;
+  unsigned char *ptr=NULL, *plastptr=NULL;
+  int i;
+
+  const char *debug = grub_env_get("debug");
+  if (debug == NULL) 
+    {
+      return;
+    }
+
+  if (grub_strword(debug,"all") || grub_strword(debug,condition))
+    {
+      grub_printf ("%s:%d: ptr[0x%p]size[0x%x:%d]", file, line, pbuffer, len,len);
+      if (fmt != NULL) 
+        {
+          va_start(args, fmt);
+          grub_vprintf(fmt,args);
+          va_end(args);
+        }
+
+      ptr = (unsigned char*) pbuffer;
+      plastptr = ptr;
+      for (i=0;i<len;i++,ptr++) {
+        if ((i % 16) == 0) {
+          if (i > 0) {
+            grub_printf("    ");
+            while(plastptr != ptr) {
+              if (grub_isprint(*plastptr)) {
+                grub_printf("%c",*plastptr);
+              } else {
+                grub_printf(".");
+              }
+              plastptr ++;
+            }
+          }
+          grub_printf("\n0x%08x:", i);
+        }
+        grub_printf(" 0x%02x",*ptr);        
+      }
+
+      if (plastptr != ptr) {
+        while((i%16) != 0) {
+          grub_printf("     ");
+          i ++;
+        }
+        grub_printf("    ");
+        while(plastptr != ptr) {
+          if (grub_isprint(*plastptr)) {
+            grub_printf("%c",*plastptr);
+          } else {
+            grub_printf(".");
+          }
+          plastptr ++;
+        }
+      }
+      grub_printf("\n");
+    }
+
+}
+
 #define PREALLOC_SIZE 255
 
 int

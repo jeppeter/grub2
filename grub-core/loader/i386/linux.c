@@ -505,6 +505,7 @@ grub_linux_boot (void)
 #endif
       }
 
+  grub_printf("will boot\n\n");
   if (err)
     {
       grub_print_error ();

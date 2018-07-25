@@ -102,6 +102,7 @@ grub_relocator32_boot (struct grub_relocator *rel,
   grub_memmove (get_virtual_current_address (ch), &grub_relocator32_start,
 		RELOCATOR_SIZEOF (32));
 
+  grub_dprintf("relocator", " ");
   err = grub_relocator_prepare_relocs (rel, get_physical_target_address (ch),
 				       &relst, NULL);
   if (err)
@@ -160,6 +161,7 @@ grub_relocator16_boot (struct grub_relocator *rel,
   grub_memmove (get_virtual_current_address (ch), &grub_relocator16_start,
 		RELOCATOR_SIZEOF (16));
 
+  grub_dprintf("relocator", " ");
   err = grub_relocator_prepare_relocs (rel, get_physical_target_address (ch),
 				       &relst, NULL);
   if (err)
@@ -201,6 +203,7 @@ grub_relocator64_boot (struct grub_relocator *rel,
   grub_memmove (get_virtual_current_address (ch), &grub_relocator64_start,
 		RELOCATOR_SIZEOF (64));
 
+  grub_dprintf("relocator", " ");
   err = grub_relocator_prepare_relocs (rel, get_physical_target_address (ch),
 				       &relst, NULL);
   if (err)

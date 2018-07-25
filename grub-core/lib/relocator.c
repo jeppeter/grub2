@@ -1524,6 +1524,7 @@ grub_relocator_prepare_relocs (struct grub_relocator *rel, grub_addr_t addr,
 			grub_relocator_align,
 			rel->relocators_size, &movers_chunk, 1, 1))
     return grub_error (GRUB_ERR_OUT_OF_MEMORY, N_("out of memory"));
+  grub_dprintf_buffer("relocator",movers_chunk.src, movers_chunk.size,"movers buffer");
   movers_chunk.srcv = rels = rels0
     = grub_map_memory (movers_chunk.src, movers_chunk.size);
 

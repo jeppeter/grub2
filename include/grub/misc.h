@@ -63,6 +63,7 @@
 #define COMPILE_TIME_ASSERT(cond) switch (0) { case 1: case !(cond): ; }
 
 #define grub_dprintf(condition, ...) grub_real_dprintf(GRUB_FILE, __LINE__, condition, __VA_ARGS__)
+#define grub_dprintf_buffer(condition, ptr, len, ...) grub_real_dprintf_buffer(GRUB_FILE, __LINE__, condition, (void*)(ptr), (int)(len), __VA_ARGS__)
 
 void *EXPORT_FUNC(grub_memmove) (void *dest, const void *src, grub_size_t n);
 char *EXPORT_FUNC(grub_strcpy) (char *dest, const char *src);
@@ -372,6 +373,12 @@ void EXPORT_FUNC(grub_real_dprintf) (const char *file,
                                      const int line,
                                      const char *condition,
                                      const char *fmt, ...) __attribute__ ((format (GNU_PRINTF, 4, 5)));
+void EXPORT_FUNC(grub_real_dprintf_buffer) (const char *file,
+                                     const int line,
+                                     const char *condition,
+                                     void* pbuffer,
+                                     int len,
+                                     const char *fmt, ...) __attribute__ ((format (GNU_PRINTF, 6, 7)));
 int EXPORT_FUNC(grub_vprintf) (const char *fmt, va_list args);
 int EXPORT_FUNC(grub_snprintf) (char *str, grub_size_t n, const char *fmt, ...)
      __attribute__ ((format (GNU_PRINTF, 3, 4)));
