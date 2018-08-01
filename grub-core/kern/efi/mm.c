@@ -217,6 +217,7 @@ grub_efi_finish_boot_services (grub_efi_uintn_t *outbuf_size, void *outbuf,
       b = grub_efi_system_table->boot_services;
       status = efi_call_2 (b->exit_boot_services, grub_efi_image_handle,
 			   finish_key);
+      grub_dprintf("relocator", "finish_key 0x%lx [%ld] status 0x%lx",finish_key, finish_key, status);
       if (status == GRUB_EFI_SUCCESS)
 	break;
 
