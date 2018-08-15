@@ -101,13 +101,15 @@ grub_relocator32_boot (struct grub_relocator *rel,
 
   grub_memmove (get_virtual_current_address (ch), &grub_relocator32_start,
 		RELOCATOR_SIZEOF (32));
-
+  grub_dprintf_buffer("relocator", &grub_relocator32_start, RELOCATOR_SIZEOF (32), "relocator 32 start");
   grub_dprintf("relocator", " ");
   err = grub_relocator_prepare_relocs (rel, get_physical_target_address (ch),
 				       &relst, NULL);
   if (err)
     return err;
 
+  grub_dprintf_buffer("relocator", relst, RELOCATOR_SIZEOF (32), "relocator real start");
+  grub_dprintf_buffer("relocator", (void*)0x1000, 8, "jmp to addr");
   asm volatile ("cli");
   ((void (*) (void)) relst) ();
 

@@ -1527,6 +1527,7 @@ grub_relocator_prepare_relocs (struct grub_relocator *rel, grub_addr_t addr,
   grub_dprintf_buffer("relocator",movers_chunk.src, movers_chunk.size,"movers buffer");
   movers_chunk.srcv = rels = rels0
     = grub_map_memory (movers_chunk.src, movers_chunk.size);
+  grub_dprintf_buffer("relocator", rels0,rel->relocators_size, "movers buffer");
 
   if (relsize)
     *relsize = rel->relocators_size;
@@ -1559,7 +1560,7 @@ grub_relocator_prepare_relocs (struct grub_relocator *rel, grub_addr_t addr,
 	grub_free (to);
 	return grub_errno;
       }
-
+	grub_dprintf_buffer("relocator", rels0,rel->relocators_size, "movers buffer");
     for (j = 0; j < 256; j++)
       count[j+1] += count[j];
 
@@ -1568,7 +1569,7 @@ grub_relocator_prepare_relocs (struct grub_relocator *rel, grub_addr_t addr,
       for (chunk = rel->chunks; chunk; chunk = chunk->next)
 	from[count[chunk->src & 0xff]++] = *chunk;
     }
-
+    grub_dprintf_buffer("relocator", rels0,rel->relocators_size, "movers buffer");
     for (i = 1; i < GRUB_CPU_SIZEOF_VOID_P; i++)
       {
 	grub_memset (count, 0, sizeof (count));
@@ -1586,6 +1587,7 @@ grub_relocator_prepare_relocs (struct grub_relocator *rel, grub_addr_t addr,
     grub_free (to);
   }
 
+  grub_dprintf_buffer("relocator", rels0,rel->relocators_size, "movers buffer");
   for (j = 0; j < nchunks; j++)
     {
       grub_dprintf ("relocator", "sorted chunk %p->%p, 0x%lx\n", 
@@ -1600,6 +1602,7 @@ grub_relocator_prepare_relocs (struct grub_relocator *rel, grub_addr_t addr,
 				       sorted[j].size);
 	  rels += grub_relocator_backward_size;
 	}
+	grub_dprintf_buffer("relocator", rels0,rel->relocators_size, "movers buffer");
       if (sorted[j].src > sorted[j].target)
 	{
 	  grub_cpu_relocator_forward ((void *) rels,
@@ -1609,11 +1612,13 @@ grub_relocator_prepare_relocs (struct grub_relocator *rel, grub_addr_t addr,
 				      sorted[j].size);
 	  rels += grub_relocator_forward_size;
 	}
+	grub_dprintf_buffer("relocator", rels0,rel->relocators_size, "movers buffer");
       if (sorted[j].src == sorted[j].target)
 	grub_arch_sync_caches (sorted[j].srcv, sorted[j].size);
     }
   grub_cpu_relocator_jumper ((void *) rels, (grub_addr_t) addr);
   *relstart = rels0;
+  grub_dprintf_buffer("relocator", rels0,rel->relocators_size, "movers buffer");
   grub_free (sorted);
   return GRUB_ERR_NONE;
 }
