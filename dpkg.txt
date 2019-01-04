@@ -1,0 +1,6 @@
+autoconf
+bison
+flex
+libdevmapper-dev
+libfreetype6-dev
+libfuse-dev
