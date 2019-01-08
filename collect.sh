@@ -27,16 +27,24 @@ if [ ! -d "$outdir" ]
 	run_cmd mkdir -p "$outdir"
 fi
 
-for _l in $(find $script_dir/grub-core/ -name '*.mod')
+
+
+for _l in $(find $script_dir/grub-core/ -maxdepth 1 -name '*.mod' -o -name modinfo.sh -o -name '*.lst')
 do
 	_b=`basename $_l`
-	run_cmd cp "$_l"  "$outdir/$_b"
+	if [ -f "$_l" ]
+		then
+		run_cmd cp --preserve=mode "$_l"  "$outdir/$_b"
+	fi
 done
 
 for _l in $(find $script_dir/grub-core/ -name '*.img')
 do
 	_b=`basename $_l`
-	run_cmd cp "$_l"  "$outdir/$_b"
+	if [ -f "$_l" ]
+		then
+		run_cmd cp --preserve=mode "$_l"  "$outdir/$_b"
+	fi
 done
 
 for _l in $(find $script_dir  -maxdepth 1 -name 'grub-*' )
@@ -44,6 +52,6 @@ do
 	_b=`basename $_l`
 	if [ -f "$_l" ]
 		then
-		run_cmd cp "$_l" "$outdir/$_b"
+		run_cmd cp --preserve=mode "$_l" "$outdir/$_b"
 	fi
 done
