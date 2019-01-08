@@ -536,13 +536,24 @@ struct grub_boot_time
 };
 
 extern struct grub_boot_time *EXPORT_VAR(grub_boot_time_head);
+extern struct grub_boot_time *EXPORT_VAR(grub_static_boot_time_head);
 
 void EXPORT_FUNC(grub_real_boot_time) (const char *file,
 				       const int line,
 				       const char *fmt, ...) __attribute__ ((format (GNU_PRINTF, 3, 4)));
+
+void EXPORT_FUNC(grub_real_static_boot_time) (const char *file,
+               const int line,
+               const char *fmt, ...) __attribute__ ((format (GNU_PRINTF, 3, 4)));
+
+void* EXPORT_FUNC(grub_static_alloc)(int size);
+void EXPORT_FUNC(grub_static_free)(void* ptr);
+
 #define grub_boot_time(...) grub_real_boot_time(GRUB_FILE, __LINE__, __VA_ARGS__)
+#define grub_static_boot_time(...) grub_real_static_boot_time(GRUB_FILE, __LINE__, __VA_ARGS__)
 #else
 #define grub_boot_time(...)
+#define grub_static_boot_time(...)
 #endif
 
 #define grub_max(a, b) (((a) > (b)) ? (a) : (b))

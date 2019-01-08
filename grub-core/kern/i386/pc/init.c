@@ -220,8 +220,10 @@ grub_machine_init (void)
 #endif
 
   grub_machine_mmap_iterate (mmap_iterate_hook, NULL);
+  grub_static_boot_time(" ");
 
   compact_mem_regions ();
+  grub_static_boot_time(" ");
 
   modend = grub_modules_get_end ();
   for (i = 0; i < num_regions; i++)
@@ -235,6 +237,7 @@ grub_machine_init (void)
       grub_mm_init_region ((void *) beg, fin - beg);
     }
 
+  grub_static_boot_time(" ");
   grub_tsc_init ();
 }
 

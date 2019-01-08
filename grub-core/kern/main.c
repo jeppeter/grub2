@@ -270,6 +270,7 @@ grub_main (void)
 #endif
 
   /* First of all, initialize the machine.  */
+  grub_static_boot_time("before all.");
   grub_machine_init ();
 
   grub_boot_time ("After machine init.");

@@ -31,6 +31,12 @@ grub_cmd_boottime (struct grub_command *cmd __attribute__ ((unused)),
 {
   struct grub_boot_time *cur;
   grub_uint64_t last_time = 0, start_time = 0;
+  if (grub_static_boot_time_head) {
+    for (cur = grub_static_boot_time_head;cur;cur = cur->next) {
+      grub_printf("%s:%d %s\n", cur->file, cur->line, cur->msg);
+    }    
+  }
+
   if (!grub_boot_time_head)
     {
       grub_puts_ (N_("No boot time statistics is available\n"));
