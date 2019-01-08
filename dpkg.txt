@@ -4,3 +4,5 @@ flex
 libdevmapper-dev
 libfreetype6-dev
 libfuse-dev
+ttf-dejavu-core
+liblzma-dev
