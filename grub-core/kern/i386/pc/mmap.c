@@ -91,6 +91,8 @@ grub_get_eisa_mmap (void)
   return (regs.eax & 0xffff) | (regs.ebx << 16);
 }
 
+
+#if TIME_EMULATE_MODE == 0
 /*
  *
  * grub_get_mmap_entry(addr, cont) : address and old continuation value (zero to
@@ -137,11 +139,11 @@ grub_get_mmap_entry (struct grub_machine_mmap_entry *entry,
   /* return the continuation value */
   return regs.ebx;
 }
+#endif
 
 grub_err_t
 grub_machine_mmap_iterate (grub_memory_hook_t hook, void *hook_data)
 {
-  grub_uint32_t cont;
   struct grub_machine_mmap_entry *entry
     = (struct grub_machine_mmap_entry *) GRUB_MEMORY_MACHINE_SCRATCH_ADDR;
 
@@ -179,6 +181,7 @@ grub_machine_mmap_iterate (grub_memory_hook_t hook, void *hook_data)
   hook(entry->addr,entry->len,entry->type,hook_data);
   return 0;
 #else
+  grub_uint32_t cont;
   /* Check if grub_get_mmap_entry works.  */
   cont = grub_get_mmap_entry (entry, 0);
 
