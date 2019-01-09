@@ -18,8 +18,10 @@ done
 
 if [ -z "$source_file" ]
 	then
-	source_file=`readlink -f ./$source_file1`
+	source_file=`readlink -f $source_file1`
+else
+	echo "source set [$source_file]"
 fi
 
-script_dir=`dirname $source_file`
-export GRUB_CONTRIB=$script_dir/debian/grub-extras/
+source_dir=`dirname $source_file`
+export GRUB_CONTRIB=$source_dir/debian/grub-extras/

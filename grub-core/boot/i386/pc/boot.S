@@ -51,8 +51,9 @@ LOCAL(floppy_probe):
 
 LOCAL(probe_loop):
 	/* reset floppy controller INT 13h AH=0 */
-	xorw	%ax, %ax
-	int	MACRO_DOLLAR(0x13)
+	/* no init */
+	//xorw	%ax, %ax
+	//int	MACRO_DOLLAR(0x13)
 
 	incw	%si
 	movb	(%si), %cl

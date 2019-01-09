@@ -233,6 +233,9 @@ grub_biosdisk_get_diskinfo_real (int drive, void *drp, grub_uint16_t ax)
 static int
 grub_biosdisk_get_cdinfo_int13_extensions (int drive, void *cdrp)
 {
+  drive = drive;
+  cdrp = cdrp;
+  return 1;
   return grub_biosdisk_get_diskinfo_real (drive, cdrp, 0x4b01);
 }
 
@@ -243,7 +246,10 @@ grub_biosdisk_get_cdinfo_int13_extensions (int drive, void *cdrp)
 static int
 grub_biosdisk_get_diskinfo_int13_extensions (int drive, void *drp)
 {
-  return grub_biosdisk_get_diskinfo_real (drive, drp, 0x4800);
+  //return grub_biosdisk_get_diskinfo_real (drive, drp, 0x4800);
+  drive = drive;
+  drp = drp;
+  return 1;
 }
 
 static int
@@ -644,13 +650,13 @@ GRUB_MOD_INIT(biosdisk)
 
   if (grub_disk_firmware_is_tainted)
     {
-      grub_dprintf("disk", "grub_disk_firmware_is_tainted");
+      grub_boot_time("grub_disk_firmware_is_tainted");
       grub_puts_ (N_("Native disk drivers are in use. "
 		     "Refusing to use firmware disk interface."));
       return;
     }
   grub_disk_firmware_fini = grub_disk_biosdisk_fini;
-  grub_dprintf("disk", "init ");
+  grub_boot_time("init ");
 
   grub_memset (cdrp, 0, sizeof (*cdrp));
   cdrp->size = sizeof (*cdrp);
