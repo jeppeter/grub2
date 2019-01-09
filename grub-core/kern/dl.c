@@ -668,7 +668,7 @@ grub_dl_load_core (void *addr, grub_size_t size)
   if (!mod)
     return NULL;
 
-  grub_boot_time ("Initing module %s", mod->name);
+  grub_boot_time ("Initing module %s init [%p]", mod->name, mod->init);
   grub_dl_init (mod);
   grub_boot_time ("Module %s inited", mod->name);
 

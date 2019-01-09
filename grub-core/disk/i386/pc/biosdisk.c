@@ -644,11 +644,13 @@ GRUB_MOD_INIT(biosdisk)
 
   if (grub_disk_firmware_is_tainted)
     {
+      grub_dprintf("disk", "grub_disk_firmware_is_tainted");
       grub_puts_ (N_("Native disk drivers are in use. "
 		     "Refusing to use firmware disk interface."));
       return;
     }
   grub_disk_firmware_fini = grub_disk_biosdisk_fini;
+  grub_dprintf("disk", "init ");
 
   grub_memset (cdrp, 0, sizeof (*cdrp));
   cdrp->size = sizeof (*cdrp);

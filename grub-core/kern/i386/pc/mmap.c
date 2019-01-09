@@ -145,6 +145,7 @@ grub_machine_mmap_iterate (grub_memory_hook_t hook, void *hook_data)
   struct grub_machine_mmap_entry *entry
     = (struct grub_machine_mmap_entry *) GRUB_MEMORY_MACHINE_SCRATCH_ADDR;
 
+    grub_static_boot_time("entry ptr [%p]", entry);
   grub_memset (entry, 0, sizeof (entry));
 
   /* Check if grub_get_mmap_entry works.  */
@@ -153,6 +154,8 @@ grub_machine_mmap_iterate (grub_memory_hook_t hook, void *hook_data)
   if (entry->size)
     do
       {
+        grub_static_boot_time("entry addr[0x%llx] len[0x%llx:%lld] type[0x%x:%d]", entry->addr, 
+            entry->len, entry->len, entry->type,entry->type);
 	if (hook (entry->addr, entry->len,
 		  /* GRUB mmaps have been defined to match with the E820 definition.
 		     Therefore, we can just pass type through.  */

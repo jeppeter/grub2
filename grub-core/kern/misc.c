@@ -1407,7 +1407,7 @@ grub_real_boot_time (const char *file,
 
 struct grub_boot_time *grub_static_boot_time_head;
 static struct grub_boot_time **static_boot_time_last = &grub_static_boot_time_head;
-static unsigned char st_static_buffer[(1 << 16)];
+static unsigned char st_static_buffer[(1 << 17)];
 static unsigned char* st_static_start = (unsigned char*) st_static_buffer;
 static unsigned char* st_static_cur = (unsigned char*) st_static_buffer;
 
@@ -1457,6 +1457,8 @@ grub_real_static_boot_time (const char *file,
   parse_printf_args(fmt,&args,ap);
   n->msg = grub_static_alloc(GRUB_MSG_SIZE);
   if (n->msg == NULL) {
+    grub_static_free(n);
+    free_printf_args(&args);
     grub_errno = 0;
     grub_error_pop();
     return;
@@ -1465,6 +1467,113 @@ grub_real_static_boot_time (const char *file,
   grub_vsnprintf_real(n->msg, GRUB_MSG_SIZE, fmt,&args);
   free_printf_args(&args);
   va_end (ap);
+
+  *static_boot_time_last = n;
+  static_boot_time_last = &n->next;
+  grub_errno = 0;
+  grub_error_pop ();
+  return ;
+}
+
+
+#define GRUB_BUFFER_FMT(...)                                                                      \
+do{                                                                                               \
+  if (leftsize > 0) {                                                                             \
+      ret = grub_snprintf(pcurptr, leftsize, __VA_ARGS__);                                        \
+      leftsize -= ret;                                                                            \
+      pcurptr += leftsize;                                                                        \
+  }                                                                                               \
+} while(0)
+
+void
+grub_real_static_boot_time_buffer (const char *file,
+         const int line,
+         unsigned char* ptr,
+         int size,
+         const char *fmt, ...)
+{
+  struct grub_boot_time *n;
+  va_list ap;
+  struct printf_args args;
+  int allocsize=0;
+  int leftsize=0;
+  char* pcurptr=NULL;
+  int ret;
+  unsigned char* pptr= ptr;
+  unsigned char* plast= pptr;
+  int i;
+
+
+  grub_error_push ();
+  n = grub_static_alloc (sizeof (*n));
+  if (!n)
+    {
+      grub_errno = 0;
+      grub_error_pop ();
+      return;
+    }
+  n->file = file;
+  n->line = line;
+  n->tp = 0;
+  n->next = 0;
+
+
+  va_start (ap, fmt);
+  allocsize = size * 8 + GRUB_MSG_SIZE;
+  leftsize = allocsize;
+  n->msg = grub_static_alloc(allocsize);
+  if (n->msg == NULL) {
+    grub_static_free(n);
+    grub_errno = 0;
+    grub_error_pop();
+    return;
+  }
+  pcurptr = n->msg;
+
+  GRUB_BUFFER_FMT("pointer [%p] size[0x%x:%d]", ptr,size,size);
+
+  parse_printf_args(fmt,&args,ap);
+
+  if (leftsize > 0) {
+    ret = grub_vsnprintf_real(pcurptr, leftsize, fmt,&args);
+    pcurptr += ret;
+    leftsize -= ret;
+  }  
+  free_printf_args(&args);
+  va_end (ap);
+
+  for(i=0;i< size;i++,pptr) {
+    if ((i%16) == 0) {
+      if (i > 0) {
+        GRUB_BUFFER_FMT("    ");
+        while(plast != pptr) {
+          if (*plast >= ' ' && *plast <= '~') {
+            GRUB_BUFFER_FMT("%c", *plast);
+          } else {
+            GRUB_BUFFER_FMT(".");
+          }
+          plast ++;
+        }
+        GRUB_BUFFER_FMT("\n0x%08x:", i);
+      }
+      GRUB_BUFFER_FMT(" 0x%02x", *pptr);
+    }
+  }
+
+  if (plast != pptr) {
+    while((i %16) != 0) {
+      GRUB_BUFFER_FMT("     ");
+      i ++;
+    }
+    while(plast != pptr) {
+      if (*plast >= ' ' && *plast <= '~') {
+        GRUB_BUFFER_FMT("%c", *plast);
+      } else {
+        GRUB_BUFFER_FMT(".");
+      }
+      plast ++;
+    }
+  }
 
   *static_boot_time_last = n;
   static_boot_time_last = &n->next;
