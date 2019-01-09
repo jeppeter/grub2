@@ -461,7 +461,7 @@ grub_biosdisk_rw (int cmd, grub_disk_t disk,
 {
   struct grub_biosdisk_data *data = disk->data;
 
-  if (data->flags & GRUB_BIOSDISK_FLAG_LBA)
+  if ( DISK_CHS_MODE && (data->flags & GRUB_BIOSDISK_FLAG_LBA))
     {
       struct grub_biosdisk_dap *dap;
 
@@ -504,7 +504,7 @@ grub_biosdisk_rw (int cmd, grub_disk_t disk,
     {
       unsigned coff, hoff, soff;
       unsigned head;
-
+      grub_dprintf("disk","disk for handle\n");
       /* It is impossible to reach over 8064 MiB (a bit less than LBA24) with
 	 the traditional CHS access.  */
       if (sector >

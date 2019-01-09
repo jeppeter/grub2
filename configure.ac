@@ -1129,12 +1129,48 @@ AC_ARG_ENABLE([boot-time],
 	      AS_HELP_STRING([--enable-boot-time],
                              [enable boot time statistics collection]))
 
+
 if test x$enable_boot_time = xyes; then
   BOOT_TIME_STATS=1
 else
   BOOT_TIME_STATS=0
 fi
 AC_SUBST([BOOT_TIME_STATS])
+
+AC_ARG_ENABLE([chs-mode],
+    AS_HELP_STRING([--enable-chs-mode],
+          [enable chs mode read]))
+
+if test x$enable_chs_mode = xyes; then
+  DISK_CHS_MODE=1
+else
+  DISK_CHS_MODE=0
+fi
+AC_SUBST([DISK_CHS_MODE])
+
+AC_ARG_ENABLE([time-emulate],
+    AS_HELP_STRING([--enable-time-emulate],
+          [enable time emulated with condition]))
+
+if test x$enable_time_emulate = xyes; then
+  TIME_EMULATE_MODE=1
+else
+  TIME_EMULATE_MODE=0
+fi
+AC_SUBST([TIME_EMULATE_MODE])
+
+
+AC_ARG_ENABLE([e820map-emulate],
+    AS_HELP_STRING([--enable-e820map-emulate],
+          [enable e820map emulated]))
+
+if test x$enable_e820map_emulate = xyes; then
+  E820MAP_EMULATE_MODE=1
+else
+  E820MAP_EMULATE_MODE=0
+fi
+AC_SUBST([E820MAP_EMULATE_MODE])
+
 
 AC_ARG_ENABLE([grub-emu-usb],
 	      [AS_HELP_STRING([--enable-grub-emu-usb],
@@ -1746,6 +1782,9 @@ AM_CONDITIONAL([COND_APPLE_LINKER], [test x$TARGET_APPLE_LINKER = x1])
 AM_CONDITIONAL([COND_ENABLE_EFIEMU], [test x$enable_efiemu = xyes])
 AM_CONDITIONAL([COND_ENABLE_CACHE_STATS], [test x$DISK_CACHE_STATS = x1])
 AM_CONDITIONAL([COND_ENABLE_BOOT_TIME_STATS], [test x$BOOT_TIME_STATS = x1])
+AM_CONDITIONAL([COND_ENABLE_DISK_CHS_MODE], [test x$DISK_CHS_MODE = x1])
+AM_CONDITIONAL([COND_ENABLE_TIME_EMULATE_MODE], [test x$TIME_EMULATE_MODE = x1])
+AM_CONDITIONAL([COND_ENABLE_E820MAP_EMULATE_MODE], [test x$E820MAP_EMULATE_MODE = x1])
 
 AM_CONDITIONAL([COND_HAVE_CXX], [test x$HAVE_CXX = xyes])
 

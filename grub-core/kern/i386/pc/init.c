@@ -55,13 +55,24 @@ void (*grub_pc_net_config) (char **device, char **path);
 grub_uint64_t
 grub_rtc_get_time_ms (void)
 {
-  struct grub_bios_int_registers regs;
 
+#if TIME_EMULATE_MODE
+  static grub_uint64_t st_rtc_cnt = 0;
+  static grub_uint64_t st_rtc_inccnt = 0;
+
+  st_rtc_inccnt ++;
+  if (st_rtc_inccnt > 10000) {
+    st_rtc_cnt ++;
+    st_rtc_inccnt = 0;
+  }
+  return st_rtc_cnt;
+#else
+  struct grub_bios_int_registers regs;
   regs.eax = 0;
   regs.flags = GRUB_CPU_INT_FLAGS_DEFAULT;
   grub_bios_interrupt (0x1a, &regs);
-
   return ((regs.ecx << 16) | (regs.edx & 0xffff)) * 55ULL;
+#endif
 }
 
 void

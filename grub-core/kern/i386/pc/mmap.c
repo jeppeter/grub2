@@ -148,6 +148,37 @@ grub_machine_mmap_iterate (grub_memory_hook_t hook, void *hook_data)
     grub_static_boot_time("entry ptr [%p]", entry);
   grub_memset (entry, 0, sizeof (entry));
 
+#if E820MAP_EMULATE_MODE
+  /*now we pretend the size*/
+  entry->addr = (grub_uint64_t) 0x0;
+  entry->len = (grub_uint64_t) 0x90000;
+  entry->type = GRUB_MACHINE_MEMORY_AVAILABLE;
+        grub_static_boot_time("entry addr[0x%llx] len[0x%llx:%lld] type[0x%x:%d]", entry->addr, 
+            entry->len, entry->len, entry->type,entry->type);
+  hook(entry->addr,entry->len,entry->type,hook_data);
+
+  entry->addr = (grub_uint64_t) 0x90000;
+  entry->len = (grub_uint64_t) 0x70000;
+  entry->type = GRUB_MACHINE_MEMORY_RESERVED;
+        grub_static_boot_time("entry addr[0x%llx] len[0x%llx:%lld] type[0x%x:%d]", entry->addr, 
+            entry->len, entry->len, entry->type,entry->type);
+  hook(entry->addr,entry->len,entry->type,hook_data);
+
+  entry->addr = (grub_uint64_t) 0x100000;
+  entry->len = (grub_uint64_t) 0x30000000;
+  entry->type = GRUB_MACHINE_MEMORY_AVAILABLE;
+        grub_static_boot_time("entry addr[0x%llx] len[0x%llx:%lld] type[0x%x:%d]", entry->addr, 
+            entry->len, entry->len, entry->type,entry->type);
+  hook(entry->addr,entry->len,entry->type,hook_data);
+
+  entry->addr = (grub_uint64_t) 0x30100000;
+  entry->len = (grub_uint64_t) 0x10000000;
+  entry->type = GRUB_MACHINE_MEMORY_RESERVED;
+        grub_static_boot_time("entry addr[0x%llx] len[0x%llx:%lld] type[0x%x:%d]", entry->addr, 
+            entry->len, entry->len, entry->type,entry->type);
+  hook(entry->addr,entry->len,entry->type,hook_data);
+  return 0;
+#else
   /* Check if grub_get_mmap_entry works.  */
   cont = grub_get_mmap_entry (entry, 0);
 
@@ -162,8 +193,10 @@ grub_machine_mmap_iterate (grub_memory_hook_t hook, void *hook_data)
 		  entry->type, hook_data))
 	  break;
 
-	if (! cont)
+	if (! cont){
+    grub_static_boot_time("break cont");
 	  break;
+  }
 
 	grub_memset (entry, 0, sizeof (entry));
 
@@ -191,4 +224,5 @@ grub_machine_mmap_iterate (grub_memory_hook_t hook, void *hook_data)
     }
 
   return 0;
+#endif
 }

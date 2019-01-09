@@ -87,7 +87,11 @@ LOCAL(setup_sectors):
 	cmpb	$0, -1(%si)
 
 	/* use CHS if zero, LBA otherwise */
+#if DISK_CHS_MODE
+	jmp LOCAL(chs_mode)
+#else
 	je	LOCAL(chs_mode)
+#endif
 
 	/* load logical sector start */
 	movl	(%di), %ebx

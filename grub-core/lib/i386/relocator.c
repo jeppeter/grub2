@@ -109,7 +109,7 @@ grub_relocator32_boot (struct grub_relocator *rel,
     return err;
 
   grub_dprintf_buffer("relocator", relst, RELOCATOR_SIZEOF (32), "relocator real start");
-  grub_dprintf_buffer("relocator", (void*)0x1000, 8, "jmp to addr");
+  grub_dprintf_buffer("relocator", (void*)0x1000, 8, "jmp to addr [%p]", relst);
   asm volatile ("cli");
   ((void (*) (void)) relst) ();
 

@@ -280,7 +280,12 @@ real_start:
 	pushw	%dx
 
 	/* use CHS if fails */
+	/*we push chs mode*/
+#if DISK_CHS_MODE
+	jmp LOCAL(chs_mode)
+#else
 	jc	LOCAL(chs_mode)
+#endif
 	cmpw	$0xaa55, %bx
 	jne	LOCAL(chs_mode)
 
